@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+  <div class="col-md-3">
+    {% include 'dashboard/sidebar.html' %}
+  </div>
+  <div class="col-md-9">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">All Posts <a href="{% url 'add_post' %}" class="btn btn-dark btn-sm float-right"><i class="fa-solid fa-plus"></i> Add Post</a></h5>
+        <div class="table-responsive">
+          <table class="table table-hover no-border">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Author</th>
+                <th>Status</th>
+                <th>Featured</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for post in posts %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ post.title }}</td>
+                <td>{{ post.category.category_name }}</td>
+                <td>{{ post.author.username }}</td>
+                <td>{{ post.status }}</td>
+                <td>{% if post.is_featured %}<i class="fa fa-check text-success"></i>{% else %}<i class="fa fa-xmark text-danger"></i>{% endif %}</td>
+                <td><a href="{% url 'edit_post' post.id %}" class="text-primary btn-sm" title="Edit Post"><i class="fa-regular fa-pen-to-square"></i></a>&nbsp;<a href="{% url 'delete_post' post.id %}" class="text-danger btn-sm" title="Delete Post"><i class="fa-solid fa-trash-can"></i></a></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

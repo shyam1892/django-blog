@@ -1,70 +1,112 @@
 {% load static %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Django Blogs</title>
-    <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-    <link href="{% static 'css/blog.css' %}" rel="stylesheet">
+    <link
+      href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+      rel="stylesheet"
+    />
+    <link href="{% static 'css/blog.css' %}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
   </head>
-<body>
-  <div class="container">
-    <header class="blog-header py-3">
-      <div class="row flex-nowrap justify-content-between align-items-center">
-        <div class="col-4 pt-1">
-          <a class="blog-header-logo text-dark" href="{% url 'home' %}">Django Blog</a>
-        </div>
-        <div class="col-4">
-          <form action="{% url 'search' %}" method="GET">
-            <div class="input-group">
-              <input class="form-control" type="search" name="keyword" placeholder="Search..." aria-label="Search..." aria-describedby="button-search" />
-              <button type="submit" class="btn btn-primary" id="button-search" type="button">Search</button>
-            </div>
-          </form>
-        </div>
-        <div class="col-4 d-flex justify-content-end align-items-center">
-          {% if not user.is_authenticated %}
-            <a class="btn btn-sm btn-warning" href="{% url 'login' %}">Login</a> &nbsp;
-            <a class="btn btn-sm btn-outline-secondary" href="{% url 'register' %}">Register</a>
-          {% else %}
+  <body>
+    <div class="container">
+      <header class="blog-header py-3">
+        <div class="row flex-nowrap justify-content-between align-items-center">
+          <div class="col-4 pt-1">
+            <a class="blog-header-logo text-dark" href="{% url 'home' %}"
+              >Django Blog</a
+            >
+          </div>
+          <div class="col-4">
+            <form action="{% url 'search' %}" method="GET">
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  type="search"
+                  name="keyword"
+                  placeholder="Search..."
+                  aria-label="Search..."
+                  aria-describedby="button-search"
+                />
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  id="button-search"
+                  type="button"
+                >
+                  Search
+                </button>
+              </div>
+            </form>
+          </div>
+          <div class="col-4 d-flex justify-content-end align-items-center">
+            {% if not user.is_authenticated %}
+            <a class="btn btn-sm btn-warning" href="{% url 'login' %}">Login</a>
+            &nbsp;
+            <a
+              class="btn btn-sm btn-outline-secondary"
+              href="{% url 'register' %}"
+              >Register</a
+            >
+            {% else %}
             <span>Hi, {{ user.username }}</span>&nbsp;
-            <a class="btn btn-sm btn-primary" href="#">Dashboard</a> &nbsp;
-            <a class="btn btn-sm btn-danger" href="{% url 'logout' %}">Logout</a>
-          {% endif %}
+            <a class="btn btn-sm btn-primary" href="{% url 'dashboard' %}"
+              >Dashboard</a
+            >
+            &nbsp;
+            <a class="btn btn-sm btn-danger" href="{% url 'logout' %}"
+              >Logout</a
+            >
+            {% endif %}
+          </div>
+        </div>
+      </header>
+      <div class="nav-scroller py-1 mb-2">
+        <nav class="nav d-flex justify-content-between">
+          {% for cat in categories %}
+          <a
+            class="p-2 text-muted"
+            href="{% url 'post_by_category' cat.category_slug %}"
+            >{{ cat.category_name }}</a
+          >
+          {% endfor %}
+        </nav>
+      </div>
+      <div class="row mt-3">
+        <div class="col-md-12">
+          {% if messages %} {% for message in messages %}
+          <div
+            class="alert alert-{{ message.tags }} alert-dismissible fade show"
+            role="alert"
+          >
+            {{ message }}
+            <button
+              type="button"
+              class="close"
+              data-dismiss="alert"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          {% endfor %} {% endif %}
         </div>
       </div>
-    </header>
-    <div class="nav-scroller py-1 mb-2">
-      <nav class="nav d-flex justify-content-between">
-        {% for cat in categories %}
-        <a class="p-2 text-muted" href="{% url 'post_by_category' cat.category_slug %}">{{ cat.category_name }}</a>
-        {% endfor %}
-      </nav>
+      {% block content %} {% endblock %}
     </div>
-    <div class="row mt-3">
-      <div class="col-md-12">
-        {% if messages %}
-          {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-              {{ message }}
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-          {% endfor %}
-        {% endif %}
-      </div>
-    </div>
-    {% block content %}
-    {% endblock %}
-  </div>
-  <footer class="blog-footer">
-    <p>Django blog built with � by <a href="#">Samir Karmakar</a></p>
-  </footer>
-</body>
+    <footer class="blog-footer">
+      <p>Django blog built with &#10084; by <a href="#">Samir Karmakar</a></p>
+    </footer>
+  </body>
 </html>

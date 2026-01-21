@@ -76,3 +76,8 @@ a.text-decoration-none:hover{
   text-decoration: none;
   color: #4f24a5
 }
+.alert-error {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb
+}

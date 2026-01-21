@@ -1,0 +1,2 @@
+Super Admin: samir, pwd: admin@123
+User: john, pwd: DjangoTestPwd
