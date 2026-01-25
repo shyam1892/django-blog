@@ -1,2 +1,3 @@
-Super Admin: samir, pwd: admin@123
-User: john, pwd: DjangoTestPwd
+Super Admin: admin, pwd: admin@123
+User(Editor): john, pwd: DjangoTestPwd
+User(Manager): lorem, pwd: DjangoTestPwd
