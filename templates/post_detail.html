@@ -10,7 +10,39 @@
       </header>
       <figure class="mb-4"><img class="img-fluid rounded" src="{{ post.featured_image.url }}" alt="..." /></figure>
       <section class="mb-5">
+        <p class="fs-5 mb-4 text-justify">{{ post.short_description }}</p>
         <p class="fs-5 mb-4 text-justify">{{ post.blog_body }}</p>
+        <!-- Comments -->
+        <h4>Comments({{ comments.count }})</h4>
+        {% if comments %}
+        {% for comment in comments %}
+        <div class="media mb-4 p-2" style="border: 1px solid #eee4e4;">
+          <div class="media-body">
+            <small>By {{ comment.user.username }} | {{ comment.created_at | timesince }} ago</small>
+            <p class="text-justify">{{ comment.comment }}</p>
+          </div>
+          </div>
+        {% endfor %}
+        {% else %}
+        <p>No comments yet</p>
+        {% endif %}
+        <!-- Comment form -->
+        <div class="card my-4">
+          <h5 class="card-header">Leave a Comment:</h5>
+          <div class="card-body">
+            {% if user.is_authenticated %}
+            <form action="" method="POST">
+              {% csrf_token %}
+              <div class="form-group">
+                <textarea class="form-control" name="comment" rows="3" placeholder="Please write your comment" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            {% else %}
+            <p class="text-danger">Please <a href="{% url 'login' %}">login</a> to leave a comment</p>
+            {% endif %}
+          </div>
+        </div>
       </section>
     </article>
   </div>

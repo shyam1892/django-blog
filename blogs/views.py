@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from . models import Category, Blog
+from . models import Category, Blog, Comment
 from django.db.models import Q
 
 # Create your views here.
@@ -21,10 +21,16 @@ def post_by_category(request, category_slug):
 def post_detail(request, slug):
   try:
     post = Blog.objects.get(slug=slug, status='published')
+    comments = Comment.objects.filter(blog=post).order_by('-created_at')
+    if request.method == 'POST':
+      comment = Comment(blog=post, user=request.user, comment=request.POST.get('comment'))
+      comment.save()
+      return redirect('post_detail', slug=slug)
   except Blog.DoesNotExist:
     return redirect('home')
   context = {
-    'post': post
+    'post': post,
+    'comments': comments
   }
   return render(request, 'post_detail.html', context)
 
