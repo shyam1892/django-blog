@@ -6,6 +6,7 @@ from .forms import RegistrationForm
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import auth
+from django.contrib.auth.models import Group
 
 def home(request):
   featured_post = Blog.objects.filter(is_featured=True, status='published').order_by('-updated_at')
@@ -25,7 +26,13 @@ def register(request):
   if request.method == 'POST':
     form = RegistrationForm(request.POST)
     if form.is_valid():
-      form.save()
+      user = form.save()
+      # By defalut add new user to Editor group
+      try:
+        default_group = Group.objects.get(name='Editor')
+        default_group.user_set.add(user)
+      except Group.DoesNotExist:
+        pass
       # Success message
       messages.success(request, 'Registration successful. Please login to continue.')
       return redirect('register')

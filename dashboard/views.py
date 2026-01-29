@@ -58,8 +58,11 @@ def delete_category(request, pk):
   return redirect('categories')
 
 def posts(request):
-  # Find post by author
-  posts = Blog.objects.filter(author=request.user).order_by('-updated_at')
+  # If user group is manager then show all posts otherwise show only user posts
+  if request.user.groups.filter(name='Manager').exists():
+    posts = Blog.objects.all().order_by('-updated_at')
+  else:
+    posts = Blog.objects.filter(author=request.user).order_by('-updated_at')
   context = {
     'posts': posts
   }
@@ -83,7 +86,10 @@ def add_post(request):
 
 def edit_post(request, pk):
   # Find post by author and pk
-  post = Blog.objects.filter(author=request.user, pk=pk).first()
+  if request.user.groups.filter(name='Manager').exists():
+    post = Blog.objects.filter(pk=pk).first()
+  else:
+    post = Blog.objects.filter(author=request.user, pk=pk).first()
   if post:
     form = BlogForm(instance=post)
     if request.method == 'POST':
@@ -106,7 +112,10 @@ def edit_post(request, pk):
   
 def delete_post(request, pk):
   # Find post by author and pk
-  post = Blog.objects.filter(author=request.user, pk=pk).first()
+  if request.user.groups.filter(name='Manager').exists():
+    post = Blog.objects.filter(pk=pk).first()
+  else:
+    post = Blog.objects.filter(author=request.user, pk=pk).first()
   if post:
     # Delete Image from media folder
     if post.featured_image:

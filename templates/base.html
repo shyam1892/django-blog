@@ -60,7 +60,7 @@
               >Register</a
             >
             {% else %}
-            <span>Hi, {{ user.username }}</span>&nbsp;
+            <span>Hi, {{ user.username }} | {{ user.groups.all.0 }}</span>&nbsp;
             <a class="btn btn-sm btn-primary" href="{% url 'dashboard' %}"
               >Dashboard</a
             >
